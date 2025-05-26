@@ -135,7 +135,7 @@ if __name__ == "__main__":
     # Example usage:
 
     # 1. Select distribution for cortical thickness
-    dist_type = "long_tailed"  # could be "gamma", "beta", "gmm", or "long_tailed"
+    dist_type = "gmm"  # could be "gamma", "beta", "gmm", or "long_tailed"
 
     # 2. Provide parameters for that distribution
     # Normal example: mean_thickness=0.5, var_thickness=0.05
@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
     # 3. Generate data
     X, y = generate_synthetic_data(
-        dist_type=dist_type, n_samples=2000, seed=42, **params
+        dist_type=dist_type, n_samples=1025, seed=42, **params
     )
 
     # 4. Prepare data for saving
