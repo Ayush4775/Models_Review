@@ -2,10 +2,8 @@ import sys
 import os
 
 
-current_dir = "/Users/ayushchaudhary/models_review"
-print(current_dir)
+current_dir = os.path.dirname(os.path.abspath(__file__))
 functions_path = os.path.join(current_dir, "GAMLSS-python", "functions")
-print(functions_path)
 sys.path.append(functions_path)
 
 from gamlass_main import Gamlss
