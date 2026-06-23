@@ -5,36 +5,7 @@ import pandas as pd
 
 
 def generate_synthetic_data(dist_type="normal", n_samples=2000, seed=42, **kwargs):
-    """
-    Generates synthetic (Age, Thickness) data where:
-      - Age is uniform in [age_min, age_max].
-      - Thickness is drawn from one of several possible distributions,
-        always clipped to [0,1].
-
-    Parameters
-    ----------
-    dist_type : str
-        Which distribution to sample thickness from.
-        One of ["normal", "gamma", "beta", "gmm", "long_tailed"].
-    n_samples : int
-        Number of samples.
-    seed : int
-        Random seed for reproducibility.
-    kwargs : dict
-        Distribution-specific parameters.
-        (e.g., mean_thickness, var_thickness for "normal",
-               shape_thk, scale_thk for "gamma",
-               alpha_thk, beta_thk for "beta",
-               means_thk, stds_thk, weights_thk for "gmm",
-               df_thk, loc_thk, scale_thk for "long_tailed")
-
-    Returns
-    -------
-    X : np.ndarray, shape (n_samples, 1)
-        The "Age" feature array (uniform).
-    y : np.ndarray, shape (n_samples,)
-        The "Cortical Thickness" target values, in [0,1].
-    """
+    
     np.random.seed(seed)
 
     ages = np.random.normal(loc=45, scale=25, size=n_samples)
@@ -95,40 +66,40 @@ def generate_synthetic_data(dist_type="normal", n_samples=2000, seed=42, **kwarg
     return X, thickness_raw
 
 
-# def run_gpr(X, y, n_restarts=5, dist_type=""):
-#     """
-#     Fits a Gaussian Process Regressor on (X, y), then predicts and plots.
-#     """
-#     # Define kernel
-#     kernel = RBF(length_scale=1.0) + WhiteKernel(noise_level=1e-3)
-#     gpr = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=n_restarts)
-#     gpr.fit(X, y)
+def run_gpr(X, y, n_restarts=5, dist_type=""):
+    """
+    Fits a Gaussian Process Regressor on (X, y), then predicts and plots.
+    """
+    # Define kernel
+    kernel = RBF(length_scale=1.0) + WhiteKernel(noise_level=1e-3)
+    gpr = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=n_restarts)
+    gpr.fit(X, y)
 
-#     # Predictions: sample a fine range of ages
-#     age_min, age_max = X.min(), X.max()
-#     X_test = np.linspace(age_min, age_max, 200).reshape(-1, 1)
-#     y_mean, y_std = gpr.predict(X_test, return_std=True)
+    # Predictions: sample a fine range of ages
+    age_min, age_max = X.min(), X.max()
+    X_test = np.linspace(age_min, age_max, 200).reshape(-1, 1)
+    y_mean, y_std = gpr.predict(X_test, return_std=True)
 
-#     # Print out the optimized kernel info
-#     print("Optimized Kernel:", gpr.kernel_)
-#     print("Log Marginal Likelihood:", gpr.log_marginal_likelihood(gpr.kernel_.theta))
+    # Print out the optimized kernel info
+    print("Optimized Kernel:", gpr.kernel_)
+    print("Log Marginal Likelihood:", gpr.log_marginal_likelihood(gpr.kernel_.theta))
 
-#     # Plot results
-#     plt.figure()
-#     plt.scatter(X, y, label="Samples", marker="x")
-#     plt.plot(X_test, y_mean, label="GPR Mean Prediction")
-#     plt.fill_between(
-#         X_test.ravel(),
-#         y_mean - 1.96 * y_std,
-#         y_mean + 1.96 * y_std,
-#         alpha=0.2,
-#         label="95% Confidence Interval",
-#     )
-#     plt.xlabel("Age (years) (Uniform)")
-#     plt.ylabel("Cortical Thickness [0,1]")
-#     plt.title(f"GPR on Synthetic Data (Thickness ~ {dist_type.upper()})")
-#     plt.legend()
-#     plt.show()
+    # Plot results
+    plt.figure()
+    plt.scatter(X, y, label="Samples", marker="x")
+    plt.plot(X_test, y_mean, label="GPR Mean Prediction")
+    plt.fill_between(
+        X_test.ravel(),
+        y_mean - 1.96 * y_std,
+        y_mean + 1.96 * y_std,
+        alpha=0.2,
+        label="95% Confidence Interval",
+    )
+    plt.xlabel("Age (years) (Uniform)")
+    plt.ylabel("Cortical Thickness [0,1]")
+    plt.title(f"GPR on Synthetic Data (Thickness ~ {dist_type.upper()})")
+    plt.legend()
+    plt.show()
 
 
 if __name__ == "__main__":
